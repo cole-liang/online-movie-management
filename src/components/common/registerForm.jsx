@@ -2,7 +2,19 @@ import React from "react";
 import Form from "./form";
 import Joi from "joi-browser";
 import auth from "../../services/authService";
+import styled from "styled-components";
 import { register } from "../../services/userService";
+
+const FormDiv = styled.div`
+  border: 1px solid #00bfff;
+  border-radius: 15px;
+  padding: 25px;
+  width: 400px;
+
+  & button {
+    width: 100%;
+  }
+`;
 
 class RegisterForm extends Form {
   state = {
@@ -44,12 +56,14 @@ class RegisterForm extends Form {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        {this.renderInput("username", "Username")}
-        {this.renderInput("password", "Password", "password")}
-        {this.renderInput("name", "Name")}
-        {this.renderButton("Register")}
-      </form>
+      <FormDiv>
+        <form onSubmit={this.handleSubmit}>
+          {this.renderInput("username", "Username")}
+          {this.renderInput("password", "Password", "password")}
+          {this.renderInput("name", "Name")}
+          {this.renderButton("Register")}
+        </form>
+      </FormDiv>
     );
   }
 }

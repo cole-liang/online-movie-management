@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route, Redirect, Switch } from "react-router-dom";
+import { Route, Redirect, Switch, NavLink } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 // import { Icon } from "antd";
 import styled from "styled-components";
@@ -56,9 +56,13 @@ const Container = styled.div`
     font-size: 35px;
     font-weight: 600;
     font-family: "Comic Sans MS", cursive, sans-serif;
-    color: #ffa500;
     text-align: center;
     box-shadow: 0px 3px 5px #dcdcdc;
+  }
+
+  & header > a {
+    color: #ffa500 !important;
+    text-decoration: none;
   }
 
   & footer {
@@ -98,7 +102,11 @@ class App extends Component {
             user={user}
           />
         </div>
-        <header>Colima</header>
+        <header>
+          <NavLink to="/">
+            <span>Colima</span>
+          </NavLink>
+        </header>
         <div className="content">
           <Switch>
             <ProtectedRoute path="/movies/:id" component={MovieForm} />

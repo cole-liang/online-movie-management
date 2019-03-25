@@ -48,6 +48,7 @@ const Nav = styled.div`
     background-size: cover;
     background-image: url("https://ya-webdesign.com/images/avatar-icon-png-17.png");
   }
+
   & .userInfo {
     display: flex;
     justify-content: center;
