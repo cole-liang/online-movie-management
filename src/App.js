@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+// import { Icon } from "antd";
 import styled from "styled-components";
 import Movies from "./components/movies";
 import NavBar from "./components/common/navBar";
@@ -34,10 +35,39 @@ const Container = styled.div`
     transition: width 0.2s;
   }
 
-  & .content {
+  & .content,
+  & header,
+  & footer {
     margin-left: ${props =>
       props.isCollapsed ? collapsedWidthSm : collapsedWidthLg};
     transition: 0.2s;
+  }
+
+  & .content {
+    height: 84%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  & header {
+    height: 8%;
+    background: #fff;
+    font-size: 35px;
+    font-weight: 600;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    color: #ffa500;
+    text-align: center;
+    box-shadow: 0px 3px 5px #dcdcdc;
+  }
+
+  & footer {
+    height: 8%;
+    background: #fff;
+    color: #625471;
+    border-top: 1px solid #e2dee6;
+    text-align: center;
+    padding-top: 13px;
   }
 `;
 
@@ -68,6 +98,7 @@ class App extends Component {
             user={user}
           />
         </div>
+        <header>Colima</header>
         <div className="content">
           <Switch>
             <ProtectedRoute path="/movies/:id" component={MovieForm} />
@@ -85,6 +116,11 @@ class App extends Component {
             <Redirect to="/not-found" component={NotFound} />
           </Switch>
         </div>
+        <footer>
+          <span>
+            <i class="fa fa-copyright" /> Copyright LWX(Cole) 2019
+          </span>
+        </footer>
       </Container>
     );
   }
