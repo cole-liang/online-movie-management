@@ -41,14 +41,13 @@ const Nav = styled.div`
 
   & .avatar {
     display: inline-block;
-    margin-right: 15px;
+    margin-right: 10px;
     height: 40px;
     width: 40px;
     border-radius: 100%;
     background-size: cover;
-    background-image: url("https://png2.kisspng.com/sh/70f1275584cbdfce373fad980a284db5/L0KzQYm3WcIxN6pngJH0aYP2gLBuTfNwdaF6jNd7LXnmf7B6TgBweqVmet5uLX7ohMj2kvsub6NmiNpyY4OwccfolPFzNZpoRadrYUPmRofsU8A3amI6RqICNUa1R4KAUcU0P2U6Uao7MkG8SIS1kP5o/kisspng-computer-icons-portable-network-graphics-avatar-ic-5ba3c66e306b15.0756271715374598221983.png");
+    background-image: url("https://ya-webdesign.com/images/avatar-icon-png-17.png");
   }
-
   & .userInfo {
     display: flex;
     justify-content: center;
