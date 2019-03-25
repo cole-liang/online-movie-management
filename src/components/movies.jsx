@@ -4,6 +4,7 @@ import { getMovies, deleteMovie } from "../services/movieService";
 import { paginate } from "../utils/paginate";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Spin } from "antd";
 import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
 import MoviesTable from "./moviesTable";
@@ -121,7 +122,7 @@ class Movies extends Component {
 
     const { showingGenres, paginatedMovies, count } = this.getPageData();
 
-    if (count === 0) return <div>There is no movies in the list.</div>;
+    if (count === 0) return <Spin tip="Loading..." />;
     return (
       <div className="container">
         <div className="row m-2">
