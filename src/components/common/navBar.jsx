@@ -21,6 +21,10 @@ const Nav = styled.div`
     margin: 45px 0px 20px;
   }
 
+  & .menu > li:first-child .ant-menu-submenu-title {
+    height: 50px;
+  }
+
   & .btn-collapsed {
     outline: none;
     cursor: pointer;

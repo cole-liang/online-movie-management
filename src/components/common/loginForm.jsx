@@ -10,6 +10,7 @@ const FormDiv = styled.div`
   border-radius: 15px;
   padding: 25px;
   width: 400px;
+  box-shadow: 2px 2px 5px #dcdcdc;
 
   & button {
     width: 100%;

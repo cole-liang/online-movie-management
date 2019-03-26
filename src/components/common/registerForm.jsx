@@ -3,18 +3,41 @@ import Form from "./form";
 import Joi from "joi-browser";
 import auth from "../../services/authService";
 import styled from "styled-components";
+import { Steps, Alert } from "antd";
 import { register } from "../../services/userService";
 
 const FormDiv = styled.div`
-  border: 1px solid #00bfff;
-  border-radius: 15px;
-  padding: 25px;
-  width: 400px;
+  height: 80%;
+
+  & .steps {
+    width: 600px;
+    height: 10%;
+  }
+
+  & form {
+    margin: 0 auto;
+    width: 400px;
+  }
 
   & button {
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  & .successDiv {
+    display: flex;
+    align-items: center;
+    top: -20%;
+    position: relative;
+    height: 90%;
+  }
+
+  & .successMsg {
     width: 100%;
   }
 `;
+
+const Step = Steps.Step;
 
 class RegisterForm extends Form {
   state = {
@@ -23,7 +46,10 @@ class RegisterForm extends Form {
       password: "",
       name: ""
     },
-    errors: {}
+    errors: {},
+    current: 0,
+    seconds: 3,
+    response: null
   };
 
   schema = {
@@ -43,8 +69,8 @@ class RegisterForm extends Form {
   doSubmit = async () => {
     try {
       const response = await register(this.state.data);
-      auth.loginWithJwt(response.headers["x-auth-token"]);
-      window.location = "/";
+      this.setState({ response, current: 1 });
+      this.countDown();
     } catch (error) {
       if (error.response && error.response.status === 400) {
         const errors = { ...this.state.errors };
@@ -54,15 +80,55 @@ class RegisterForm extends Form {
     }
   };
 
+  countDown = () => {
+    let timer = setInterval(() => {
+      this.setState(
+        preState => ({
+          seconds: preState.seconds - 1
+        }),
+        () => {
+          if (this.state.seconds == 0) {
+            clearInterval(timer);
+          }
+        }
+      );
+    }, 1000);
+  };
+
+  pageRedirect = () => {
+    const { response } = this.state;
+    auth.loginWithJwt(response.headers["x-auth-token"]);
+    window.location = "/";
+  };
+
   render() {
+    const { current, seconds } = this.state;
+    if (seconds === 0) this.pageRedirect();
     return (
       <FormDiv>
-        <form onSubmit={this.handleSubmit}>
-          {this.renderInput("username", "Username")}
-          {this.renderInput("password", "Password", "password")}
-          {this.renderInput("name", "Name")}
-          {this.renderButton("Register")}
-        </form>
+        <Steps className="steps" current={current}>
+          <Step key="register" title="Register" />
+          <Step key="finished" title="Finished" />
+        </Steps>
+        {current === 0 && (
+          <form onSubmit={this.handleSubmit}>
+            {this.renderInput("username", "Username")}
+            {this.renderInput("password", "Password", "password")}
+            {this.renderInput("name", "Name")}
+            {this.renderButton("Register")}
+          </form>
+        )}
+        {current === 1 && (
+          <div className="successDiv">
+            <Alert
+              className="successMsg"
+              message="Success"
+              description={`You will be redirected to the home page in ${seconds} seconds...`}
+              type="success"
+              showIcon
+            />
+          </div>
+        )}
       </FormDiv>
     );
   }
