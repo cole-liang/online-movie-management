@@ -11,6 +11,8 @@ const FormDiv = styled.div`
   padding: 25px;
   width: 400px;
   box-shadow: 2px 2px 5px #dcdcdc;
+  height: 230px;
+  margin: auto;
 
   & button {
     width: 100%;

@@ -7,7 +7,7 @@ import { Steps, Alert } from "antd";
 import { register } from "../../services/userService";
 
 const FormDiv = styled.div`
-  height: 80%;
+  margin: 50px auto;
 
   & .steps {
     width: 600px;
@@ -15,8 +15,12 @@ const FormDiv = styled.div`
   }
 
   & form {
-    margin: 0 auto;
-    width: 400px;
+    margin: 40px auto;
+    width: 450px;
+    padding: 40px;
+    border-radius: 30px;
+    box-shadow: 2px 2px 5px #dcdcdc;
+    border: 1px solid #00bfff;
   }
 
   & button {

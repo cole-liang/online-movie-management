@@ -35,23 +35,22 @@ const Container = styled.div`
     transition: width 0.2s;
   }
 
-  & .content,
-  & header,
-  & footer {
+  & .displayWeb {
+    display: flex;
+    flex-direction: column;
     margin-left: ${props =>
       props.isCollapsed ? collapsedWidthSm : collapsedWidthLg};
     transition: 0.2s;
+    min-height: 100vh;
   }
 
   & .content {
-    height: 84%;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex: 1;
   }
 
   & header {
-    height: 8%;
+    height: 60px;
     background: #fff;
     font-size: 35px;
     font-weight: 600;
@@ -66,12 +65,11 @@ const Container = styled.div`
   }
 
   & footer {
-    height: 8%;
     background: #fff;
     color: #625471;
     border-top: 1px solid #e2dee6;
     text-align: center;
-    padding-top: 13px;
+    padding: 15px 0;
   }
 `;
 
@@ -102,33 +100,35 @@ class App extends Component {
             user={user}
           />
         </div>
-        <header>
-          <NavLink to="/">
-            <span>Colima</span>
-          </NavLink>
-        </header>
-        <div className="content">
-          <Switch>
-            <ProtectedRoute path="/movies/:id" component={MovieForm} />
-            <Route
-              path="/movies"
-              render={props => <Movies user={user} {...props} />}
-            />
-            <Route path="/customers" component={Customers} />
-            <Route path="/rentals" component={Rentals} />
-            <Route path="/not-found" exact component={NotFound} />
-            <Route path="/login" exact component={LoginForm} />
-            <Route path="/logout" exact component={Logout} />
-            <Route path="/register" exact component={RegisterForm} />
-            <Redirect from="/" exact to="/movies" component={Movies} />
-            <Redirect to="/not-found" component={NotFound} />
-          </Switch>
+        <div class="displayWeb">
+          <header>
+            <NavLink to="/">
+              <span>Colima</span>
+            </NavLink>
+          </header>
+          <div className="content">
+            <Switch>
+              <ProtectedRoute path="/movies/:id" component={MovieForm} />
+              <Route
+                path="/movies"
+                render={props => <Movies user={user} {...props} />}
+              />
+              <Route path="/customers" component={Customers} />
+              <Route path="/rentals" component={Rentals} />
+              <Route path="/not-found" exact component={NotFound} />
+              <Route path="/login" exact component={LoginForm} />
+              <Route path="/logout" exact component={Logout} />
+              <Route path="/register" exact component={RegisterForm} />
+              <Redirect from="/" exact to="/movies" component={Movies} />
+              <Redirect to="/not-found" component={NotFound} />
+            </Switch>
+          </div>
+          <footer>
+            <span>
+              <i class="fa fa-copyright" /> Copyright LWX(Cole) 2019
+            </span>
+          </footer>
         </div>
-        <footer>
-          <span>
-            <i class="fa fa-copyright" /> Copyright LWX(Cole) 2019
-          </span>
-        </footer>
       </Container>
     );
   }

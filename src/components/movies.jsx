@@ -9,7 +9,18 @@ import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
 import MoviesTable from "./moviesTable";
 import SearchBox from "./common/searchBox";
+import styled from "styled-components";
 import _ from "lodash";
+
+const MoviesContent = styled.div`
+  width: 100%;
+
+  & .container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+`;
 
 class Movies extends Component {
   state = {
@@ -124,40 +135,45 @@ class Movies extends Component {
 
     if (count === 0) return <Spin tip="Loading..." />;
     return (
-      <div className="container">
-        <div className="row m-2">
-          <div className="col-3">
-            <ListGroup
-              selectedItem={currentGenre ? currentGenre.name : ""}
-              items={showingGenres}
-              onItemSelect={this.handleGenre}
-            />
-          </div>
-          <div className="col">
-            {user && (
-              <NavLink to="/movies/new" className="btn btn-primary">
-                New Movie
-              </NavLink>
-            )}
-            <div>There are {count} movies in the list.</div>
-            <SearchBox value={searchInput} onChange={this.handleSearchChange} />
-            <MoviesTable
-              movies={paginatedMovies}
-              sortColumn={sortColumn}
-              onLike={this.handleLike}
-              onDelete={this.handleDelete}
-              onSort={this.handleSort}
-              user={user}
-            />
-            <Pagination
-              pageSize={pageSize}
-              totalItemNum={count}
-              onPageChange={this.handlePageChange}
-              currentPage={currentPage}
-            />
+      <MoviesContent>
+        <div className="container">
+          <div className="row w-100">
+            <div className="col-3">
+              <ListGroup
+                selectedItem={currentGenre ? currentGenre.name : ""}
+                items={showingGenres}
+                onItemSelect={this.handleGenre}
+              />
+            </div>
+            <div className="col">
+              {user && (
+                <NavLink to="/movies/new" className="btn btn-primary">
+                  New Movie
+                </NavLink>
+              )}
+              <div>There are {count} movies in the list.</div>
+              <SearchBox
+                value={searchInput}
+                onChange={this.handleSearchChange}
+              />
+              <MoviesTable
+                movies={paginatedMovies}
+                sortColumn={sortColumn}
+                onLike={this.handleLike}
+                onDelete={this.handleDelete}
+                onSort={this.handleSort}
+                user={user}
+              />
+              <Pagination
+                pageSize={pageSize}
+                totalItemNum={count}
+                onPageChange={this.handlePageChange}
+                currentPage={currentPage}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </MoviesContent>
     );
   }
 }
