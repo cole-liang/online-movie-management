@@ -133,7 +133,8 @@ class Movies extends Component {
 
     const { showingGenres, paginatedMovies, count } = this.getPageData();
 
-    if (count === 0) return <Spin tip="Loading..." />;
+    if (count === 0)
+      return <Spin style={{ margin: "auto" }} tip="Loading..." />;
     return (
       <MoviesContent>
         <div className="container">

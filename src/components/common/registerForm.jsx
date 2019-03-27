@@ -91,7 +91,7 @@ class RegisterForm extends Form {
           seconds: preState.seconds - 1
         }),
         () => {
-          if (this.state.seconds == 0) {
+          if (this.state.seconds === 0) {
             clearInterval(timer);
           }
         }

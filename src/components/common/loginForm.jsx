@@ -6,13 +6,19 @@ import styled from "styled-components";
 import { Redirect, NavLink } from "react-router-dom";
 
 const FormDiv = styled.div`
-  border: 1px solid #00bfff;
-  border-radius: 15px;
-  padding: 25px;
-  width: 400px;
-  box-shadow: 2px 2px 5px #dcdcdc;
-  height: 230px;
-  margin: auto;
+  background: #f5f6f7;
+  display: flex;
+  width: 100%;
+
+  & .form {
+    border-radius: 15px;
+    padding: 25px;
+    width: 400px;
+    box-shadow: 0 10px 21px #e7eeef;
+    height: 230px;
+    margin: auto;
+    background: #fff;
+  }
 
   & button {
     width: 100%;
@@ -54,25 +60,27 @@ class LoginForm extends Form {
     if (auth.getCurrentUser()) return <Redirect to="/" />;
     return (
       <FormDiv>
-        <form onSubmit={this.handleSubmit}>
-          {this.renderInput(
-            "username",
-            null,
-            "text",
-            <i class="fa fa-user" />,
-            "username"
-          )}
-          {this.renderInput(
-            "password",
-            null,
-            "password",
-            <i class="fa fa-lock" />,
-            "password"
-          )}
-          {this.renderButton("Login")}
-        </form>
-        <div>
-          Or wanna <NavLink to="/register">Register</NavLink>?
+        <div className="form">
+          <form onSubmit={this.handleSubmit}>
+            {this.renderInput(
+              "username",
+              null,
+              "text",
+              <i class="fa fa-user" />,
+              "username"
+            )}
+            {this.renderInput(
+              "password",
+              null,
+              "password",
+              <i class="fa fa-lock" />,
+              "password"
+            )}
+            {this.renderButton("Login")}
+          </form>
+          <div>
+            Or wanna <NavLink to="/register">Register</NavLink>?
+          </div>
         </div>
       </FormDiv>
     );

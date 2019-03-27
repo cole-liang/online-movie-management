@@ -120,7 +120,7 @@ class NavBar extends Component {
               }
             >
               <Menu.Item key="account">
-                <NavLink to="/">
+                <NavLink to={`/accounts/${user._id}`}>
                   <span className="account">Account</span>
                 </NavLink>
               </Menu.Item>
@@ -138,8 +138,10 @@ class NavBar extends Component {
             </NavLink>
           </Menu.Item>
           <Menu.Item key="3">
-            <Icon type="area-chart" />
-            <span>Analytics</span>
+            <NavLink to="/statistics">
+              <Icon type="area-chart" />
+              <span>Statistics</span>
+            </NavLink>
           </Menu.Item>
           {/* <SubMenu
             key="sub2"
