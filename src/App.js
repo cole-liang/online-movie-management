@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Route, Redirect, Switch, NavLink } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-// import { Icon } from "antd";
+import { Menu, Icon } from "antd";
 import styled from "styled-components";
 import Movies from "./components/movies";
 import NavBar from "./components/common/navBar";
@@ -71,7 +71,29 @@ const Container = styled.div`
     text-align: center;
     padding: 15px 0;
   }
+
+  & .horizontalMenu {
+    display: none;
+  }
+
+  @media only screen and (max-width: 768px) {
+    & header,
+    & .navDiv {
+      display: none;
+    }
+
+    & .horizontalMenu {
+      display: block;
+    }
+
+    & .displayWeb {
+      margin-left: 0;
+    }
+  }
 `;
+
+const SubMenu = Menu.SubMenu;
+const MenuItemGroup = Menu.ItemGroup;
 
 class App extends Component {
   state = {};
@@ -93,6 +115,7 @@ class App extends Component {
         <div className="navDiv">
           <ToastContainer />
           <NavBar
+            mode="inline"
             isCollapsed={isCollapsed}
             onCollapsed={this.handleCollapsed}
             collapsedWidthSm={collapsedWidthSm}
@@ -106,6 +129,9 @@ class App extends Component {
               <span>Colima</span>
             </NavLink>
           </header>
+          <div class="horizontalMenu">
+            <NavBar mode="horizontal" title="Colima" user={user} />
+          </div>
           <div className="content">
             <Switch>
               <ProtectedRoute path="/movies/:id" component={MovieForm} />

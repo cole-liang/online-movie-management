@@ -9,7 +9,7 @@ const Nav = styled.div`
   width: 100%;
 
   & .menu {
-    height: 93%;
+    height: ${props => (props.mode === "inline" ? "93%" : "46px")};
   }
 
   /*NavLink*/
@@ -25,7 +25,31 @@ const Nav = styled.div`
     height: 50px;
   }
 
+  & .menuBrand {
+    font-size: 29px;
+    font-weight: 600;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    color: white;
+    margin-left: 15px;
+  }
+
+  & .menuIcon {
+    float: ${props => (props.mode === "inline" ? "none" : "right")};
+  }
+
+  & .menuIcon i {
+    margin-right: ${props => (props.mode === "inline" ? "10px" : "0px")};
+    font-size: ${props => (props.mode === "inline" ? "inherit" : "25px")};
+    position: ${props => (props.mode === "inline" ? "inherit" : "relative")};
+    top: 5px;
+  }
+
+  & .menuIcon i + span {
+    margin-left: ${props => (props.mode === "inline" ? "0px" : "10px")};
+  }
+
   & .btn-collapsed {
+    display: ${props => (props.mode === "inline" ? "inline-block" : "none")};
     outline: none;
     cursor: pointer;
     background: rgba(0, 21, 41, 0.85);
@@ -45,9 +69,10 @@ const Nav = styled.div`
 
   & .avatar {
     display: inline-block;
-    margin-right: 10px;
-    height: 40px;
-    width: 40px;
+    margin-right: ${props => (props.mode === "inline" ? "10px" : "0px")};
+    margin-top: ${props => (props.mode === "inline" ? "0px" : "5px")};
+    height: ${props => (props.mode === "inline" ? "40px" : "35px")};
+    width: ${props => (props.mode === "inline" ? "40px" : "35px")};
     border-radius: 100%;
     background-size: cover;
     background-image: url("https://ya-webdesign.com/images/avatar-icon-png-17.png");
@@ -81,23 +106,27 @@ class NavBar extends Component {
       isCollapsed,
       user,
       collapsedWidthSm,
-      collapsedWidthLg
+      collapsedWidthLg,
+      mode,
+      title
     } = this.props;
 
     return (
       <Nav
+        mode={mode}
         isCollapsed={isCollapsed}
         collapsedWidthSm={collapsedWidthSm}
         collapsedWidthLg={collapsedWidthLg}
       >
         <Menu
           className="menu"
-          mode="inline"
+          mode={mode}
           theme="dark"
           inlineCollapsed={isCollapsed}
         >
+          {title && <span className="menuBrand">{title}</span>}
           {!user && (
-            <Menu.Item key="1">
+            <Menu.Item className="menuIcon" key="1">
               <NavLink to="/login">
                 <Icon type="user" />
                 <span className="login">User Login</span>
@@ -106,6 +135,7 @@ class NavBar extends Component {
           )}
           {user && (
             <SubMenu
+              className="menuIcon"
               key="sub1"
               title={
                 <span className="userInfo">
@@ -113,7 +143,9 @@ class NavBar extends Component {
                   {!isCollapsed && (
                     <React.Fragment>
                       <div className="avatar" />
-                      <span className="username">{user.name}</span>
+                      {mode === "inline" && (
+                        <span className="username">{user.name}</span>
+                      )}
                     </React.Fragment>
                   )}
                 </span>
@@ -131,48 +163,18 @@ class NavBar extends Component {
               </Menu.Item>
             </SubMenu>
           )}
-          <Menu.Item key="2">
+          <Menu.Item className="menuIcon" key="2">
             <NavLink to="/movies">
-              <Icon type="desktop" />
-              <span>Movies</span>
+              <Icon className="" type="desktop" />
+              {mode === "inline" && <span>Movies</span>}
             </NavLink>
           </Menu.Item>
-          <Menu.Item key="3">
+          <Menu.Item className="menuIcon" key="3">
             <NavLink to="/statistics">
               <Icon type="area-chart" />
-              <span>Statistics</span>
+              {mode === "inline" && <span>Statistics</span>}
             </NavLink>
           </Menu.Item>
-          {/* <SubMenu
-            key="sub2"
-            title={
-              <span>
-                <Icon type="mail" />
-                <span>Navigation One</span>
-              </span>
-            }
-          >
-            <Menu.Item key="5">Option 5</Menu.Item>
-            <Menu.Item key="6">Option 6</Menu.Item>
-            <Menu.Item key="7">Option 7</Menu.Item>
-            <Menu.Item key="8">Option 8</Menu.Item>
-          </SubMenu>
-          <SubMenu
-            key="sub3"
-            title={
-              <span>
-                <Icon type="appstore" />
-                <span>Navigation Two</span>
-              </span>
-            }
-          >
-            <Menu.Item key="9">Option 9</Menu.Item>
-            <Menu.Item key="10">Option 10</Menu.Item>
-            <SubMenu key="sub3" title="Submenu">
-              <Menu.Item key="11">Option 11</Menu.Item>
-              <Menu.Item key="12">Option 12</Menu.Item>
-            </SubMenu>
-          </SubMenu> */}
         </Menu>
         <button
           isCollapsed={isCollapsed}
@@ -187,75 +189,3 @@ class NavBar extends Component {
 }
 
 export default NavBar;
-
-// const NavBar = ({ user }) => {
-//   return (
-//     <ul>
-//       {user && (
-//         <div>
-//           <li>{user.username}</li>
-//           <li>Logout</li>
-//         </div>
-//       )}
-//       {!user && (
-//         <div>
-//           <li>Login</li>
-//         </div>
-//       )}
-//       <li>
-//         <NavLink to="/movies">Movies</NavLink>
-//       </li>
-//     </ul>
-// <nav className="navbar navbar-expand-lg navbar-light bg-light">
-//   <Link className="navbar-brand" to="/">
-//     Vidly
-//   </Link>
-//   <button
-//     className="navbar-toggler"
-//     type="button"
-//     data-toggle="collapse"
-//     data-target="#navbarNavAltMarkup"
-//     aria-controls="navbarSupportedContent"
-//     aria-expanded="false"
-//     aria-label="Toggle navigation"
-//   >
-//     <span className="navbar-toggler-icon" />
-//   </button>
-//   <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-//     <div className="navbar-nav">
-//       <NavLink className="nav-item nav-link" to="/movies">
-//         Movies
-//       </NavLink>
-//       <NavLink className="nav-item nav-link" to="/customers">
-//         Customers
-//       </NavLink>
-//       <NavLink className="nav-item nav-link" to="/rentals">
-//         Rentals
-//       </NavLink>
-//       {!user && (
-//         <React.Fragment>
-//           <NavLink className="nav-item nav-link" to="/login">
-//             Login
-//           </NavLink>
-//           <NavLink className="nav-item nav-link" to="/register">
-//             Register
-//           </NavLink>
-//         </React.Fragment>
-//       )}
-//       {user && (
-//         <React.Fragment>
-//           <NavLink className="nav-item nav-link" to="/profile">
-//             {user.name}
-//           </NavLink>
-//           <NavLink className="nav-item nav-link" to="/logout">
-//             Logout
-//           </NavLink>
-//         </React.Fragment>
-//       )}
-//     </div>
-//   </div>
-// </nav>
-//   );
-// };
-
-// export default NavBar;
