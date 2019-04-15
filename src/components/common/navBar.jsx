@@ -40,8 +40,8 @@ const Nav = styled.div`
   & .menuIcon i {
     margin-right: ${props => (props.mode === "inline" ? "10px" : "0px")};
     font-size: ${props => (props.mode === "inline" ? "inherit" : "25px")};
-    position: ${props => (props.mode === "inline" ? "inherit" : "relative")};
-    top: 5px;
+    position: relative;
+    top: -4px;
   }
 
   & .menuIcon i + span {
