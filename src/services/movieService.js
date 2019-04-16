@@ -17,6 +17,7 @@ export async function deleteMovie(id) {
 }
 
 export async function saveMovie(movie) {
+  console.log("service", movie);
   const body = { ...movie };
   delete body._id;
 

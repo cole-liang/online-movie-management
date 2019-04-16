@@ -77,6 +77,7 @@ class Movies extends Component {
 
     if (count === 0)
       return <Spin style={{ margin: "auto" }} tip="Loading..." />;
+
     return (
       <MoviesContent>
         <div className="container">

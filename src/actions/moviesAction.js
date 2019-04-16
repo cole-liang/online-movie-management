@@ -13,11 +13,22 @@ export const loadMovies = () => {
   };
 };
 
+// export const loadMovie = id => {
+//   return async dispatch => {
+//     try {
+//       const movie = await moviesAPI.getMovie(id);
+//       return dispatch(loadMovieSuccess(movie));
+//     } catch (error) {
+//       throw error;
+//     }
+//   };
+// };
+
 export const addMovie = movie => {
   return async dispatch => {
     try {
-      await moviesAPI.saveMovie(movie);
-      return dispatch(addMovieSuccess(movie));
+      const { data: newMovie } = await moviesAPI.saveMovie(movie);
+      return dispatch(addMovieSuccess(newMovie));
     } catch (error) {
       throw error;
     }
@@ -27,8 +38,8 @@ export const addMovie = movie => {
 export const updateMovie = movie => {
   return async dispatch => {
     try {
-      await moviesAPI.saveMovie(movie);
-      return dispatch(updateMovieSuccess(movie));
+      const { data: updatedMovie } = await moviesAPI.saveMovie(movie);
+      return dispatch(updateMovieSuccess(updatedMovie));
     } catch (error) {
       throw error;
     }

@@ -1,12 +1,11 @@
 import React from "react";
 import Form from "./common/form";
 import Joi from "joi-browser";
-import * as genreAPI from "../services/genreService";
-import { getMovie, saveMovie } from "./../services/movieService";
+import * as moviesAction from "../actions/moviesAction";
+import { connect } from "react-redux";
 
 class MovieForm extends Form {
   state = {
-    genres: [],
     data: {
       _id: "",
       title: "",
@@ -17,27 +16,27 @@ class MovieForm extends Form {
     errors: {}
   };
 
-  async populateGenres() {
-    const genres = await genreAPI.getGenres();
-    this.setState({ genres });
-  }
+  /* Data will lose after refreshing. If loadMovie is implemented in Action, it */
+  /* will be hard to redirect to not-found page. Looking for better solution.   */
+  populateMovies() {
+    if (this.props.isAddMovie) return;
 
-  async populateMovies() {
-    const id = this.props.match.params.id;
-    if (id === "new") return;
+    // try {
+    const movie = this.props.movie;
 
-    try {
-      const movie = await getMovie(id);
+    if (movie) {
       this.setState({ data: this.mapToViewModel(movie) });
-    } catch (error) {
-      if (error.response && error.response.status === 404)
-        this.props.history.replace("/not-found");
+    } else {
+      this.props.history.replace("/not-found");
     }
+    // } catch (error) {
+    // if (error.response && error.response.status === 404)
+    // this.props.history.replace("/not-found");
+    // }
   }
 
-  async componentDidMount() {
-    await this.populateGenres();
-    await this.populateMovies();
+  componentDidMount() {
+    this.populateMovies();
   }
 
   mapToViewModel = movie => {
@@ -71,14 +70,18 @@ class MovieForm extends Form {
       .label("Rate")
   };
 
-  doSubmit = async () => {
-    await saveMovie(this.state.data);
+  doSubmit = () => {
+    if (this.props.isAddMovie) {
+      this.props.addMovie(this.state.data);
+    } else {
+      this.props.updateMovie(this.state.data);
+    }
 
     this.props.history.push("/movies");
   };
 
   render() {
-    const { genres } = this.state;
+    const { genres } = this.props;
 
     return (
       <React.Fragment>
@@ -95,4 +98,18 @@ class MovieForm extends Form {
   }
 }
 
-export default MovieForm;
+const mapStateToProps = (state, ownProps) => ({
+  genres: state.genres,
+  movie: state.movies.find(movie => movie._id === ownProps.match.params.id),
+  isAddMovie: ownProps.match.params.id === "new"
+});
+
+const mapDispatchToProps = dispatch => ({
+  addMovie: movie => dispatch(moviesAction.addMovie(movie)),
+  updateMovie: movie => dispatch(moviesAction.updateMovie(movie))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MovieForm);
