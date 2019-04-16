@@ -30,7 +30,6 @@ const Nav = styled.div`
     font-weight: 600;
     font-family: "Comic Sans MS", cursive, sans-serif;
     color: white;
-    margin-left: 15px;
   }
 
   & .menuIcon {
@@ -124,7 +123,11 @@ class NavBar extends Component {
           theme="dark"
           inlineCollapsed={isCollapsed}
         >
-          {title && <span className="menuBrand">{title}</span>}
+          {title && (
+            <Menu.Item key="menuTitle" disabled>
+              <span className="menuBrand">{title}</span>
+            </Menu.Item>
+          )}
           {!user && (
             <Menu.Item className="menuIcon" key="1">
               <NavLink to="/login">
@@ -135,6 +138,7 @@ class NavBar extends Component {
           )}
           {user && (
             <SubMenu
+              {...this.props}
               className="menuIcon"
               key="sub1"
               title={
