@@ -16,6 +16,8 @@ import ProtectedRoute from "./components/common/protectedRoute";
 import auth from "./services/authService";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
+import { connect } from "react-redux";
+import * as moviesAction from "./actions/moviesAction";
 
 const collapsedWidthSm = "80px";
 const collapsedWidthLg = "250px";
@@ -101,6 +103,7 @@ class App extends Component {
   componentDidMount() {
     const user = auth.getCurrentUser();
     this.setState({ user, isCollapsed: false });
+    // this.props.loadMovies();
   }
 
   handleCollapsed = isCollapsed => {
@@ -160,4 +163,12 @@ class App extends Component {
   }
 }
 
+// const mapDispatchToProps = dispatch => ({
+//   loadMovies: () => dispatch(moviesAction.loadMovies())
+// });
+
+// export default connect(
+//   null,
+//   mapDispatchToProps
+// )(App);
 export default App;

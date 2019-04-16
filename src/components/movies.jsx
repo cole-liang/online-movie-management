@@ -1,16 +1,16 @@
 import React, { Component } from "react";
-import { getGenres } from "../services/genreService";
-import { getMovies, deleteMovie } from "../services/movieService";
-import { paginate } from "../utils/paginate";
-import { NavLink } from "react-router-dom";
-import { toast } from "react-toastify";
-import { Spin } from "antd";
 import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
 import MoviesTable from "./moviesTable";
 import SearchBox from "./common/searchBox";
 import styled from "styled-components";
-import _ from "lodash";
+import { NavLink } from "react-router-dom";
+import { Spin } from "antd";
+import { connect } from "react-redux";
+import { genresWithAllGenres } from "../selectors/genresSelector";
+import { getPaginatedMoviesAndCount } from "../selectors/moviesSelector";
+import * as moviesAction from "../actions/moviesAction";
+import * as genresAction from "./../actions/genresAction";
 
 const MoviesContent = styled.div`
   width: 100%;
@@ -24,8 +24,6 @@ const MoviesContent = styled.div`
 
 class Movies extends Component {
   state = {
-    movies: [],
-    genres: [],
     currentGenre: null,
     currentPage: 1,
     pageSize: 4,
@@ -33,36 +31,17 @@ class Movies extends Component {
     sortColumn: { path: "title", order: "asc" }
   };
 
-  async componentDidMount() {
-    const movies = await getMovies();
-    const genres = await getGenres();
-    this.setState({ movies, genres });
+  componentDidMount() {
+    this.props.loadMovies();
+    this.props.loadGenres();
   }
 
-  handleDelete = async movie => {
-    const originalMovies = [...this.state.movies];
-
-    const movies = originalMovies.filter(m => m._id !== movie._id);
-    this.setState({ movies });
-
-    try {
-      await deleteMovie(movie._id);
-    } catch (error) {
-      if (error.response && error.response.status === 404)
-        toast.error("This movie has already been deleted.");
-      if (error.response && error.response.status === 403)
-        toast.error("Unauthorized user cannot delete item");
-      if (error.response && error.response.status === 400)
-        toast.error("Please login");
-      this.setState({ movies: originalMovies });
-    }
+  handleDelete = movie => {
+    this.props.deleteMovie(movie._id);
   };
 
   handleLike = movie => {
-    const movies = [...this.state.movies];
-    const index = movies.indexOf(movie);
-    movies[index].isLike = !movie.isLike;
-    this.setState({ movies });
+    this.props.likeMovie(movie);
   };
 
   handleGenre = genre => {
@@ -85,41 +64,6 @@ class Movies extends Component {
     this.setState({ searchInput: query, currentGenre: null, currentPage: 1 });
   };
 
-  getPageData = () => {
-    const {
-      movies: allMovies,
-      genres,
-      currentGenre,
-      currentPage,
-      pageSize,
-      sortColumn,
-      searchInput
-    } = this.state;
-
-    const showingGenres = [{ _id: "", name: "All Genres" }, ...genres];
-
-    let selectedMovies =
-      currentGenre && currentGenre._id
-        ? allMovies.filter(movie => movie.genre.name === currentGenre.name)
-        : allMovies;
-
-    selectedMovies = selectedMovies.filter(m =>
-      m.title.toLowerCase().startsWith(searchInput.toLowerCase())
-    );
-
-    const sortMovies = _.orderBy(
-      selectedMovies,
-      sortColumn.path,
-      sortColumn.order
-    );
-
-    const paginatedMovies = paginate(sortMovies, pageSize, currentPage);
-
-    const count = selectedMovies.length;
-
-    return { showingGenres, paginatedMovies, count };
-  };
-
   render() {
     const {
       currentGenre,
@@ -129,9 +73,14 @@ class Movies extends Component {
       searchInput
     } = this.state;
 
-    const { user } = this.props;
+    const { user, movies, genres } = this.props;
 
-    const { showingGenres, paginatedMovies, count } = this.getPageData();
+    const showingGenres = genresWithAllGenres(genres);
+
+    const { paginatedMovies, count } = getPaginatedMoviesAndCount(
+      movies,
+      this.state
+    );
 
     if (count === 0)
       return <Spin style={{ margin: "auto" }} tip="Loading..." />;
@@ -179,4 +128,22 @@ class Movies extends Component {
   }
 }
 
-export default Movies;
+const mapStateToProps = state => {
+  return {
+    movies: state.movies,
+    genres: state.genres
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  loadMovies: () => dispatch(moviesAction.loadMovies()),
+  addMovie: movie => dispatch(moviesAction.addMovie(movie)),
+  likeMovie: movie => dispatch(moviesAction.likeMovie(movie)),
+  deleteMovie: movieId => dispatch(moviesAction.deleteMovie(movieId)),
+  loadGenres: () => dispatch(genresAction.loadGenres())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Movies);
