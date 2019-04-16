@@ -47,7 +47,7 @@ export const deleteMovie = movieId => {
         toast.error("Unauthorized user cannot delete item");
       if (error.response && error.response.status === 400)
         toast.error("Please login");
-      return dispatch(MovieActionFail);
+      return dispatch(movieActionFail());
     }
   };
 };
@@ -83,6 +83,6 @@ const loadMoviesSuccess = movies => ({
   movies
 });
 
-const MovieActionFail = () => ({
+const movieActionFail = () => ({
   type: types.MOVIE_ACTION_FAIL
 });

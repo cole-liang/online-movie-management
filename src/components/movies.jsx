@@ -10,7 +10,8 @@ import { connect } from "react-redux";
 import { genresWithAllGenres } from "../selectors/genresSelector";
 import { getPaginatedMoviesAndCount } from "../selectors/moviesSelector";
 import * as moviesAction from "../actions/moviesAction";
-import * as genresAction from "./../actions/genresAction";
+import * as genresAction from "../actions/genresAction";
+import * as filtersAction from "../actions/filtersAction";
 
 const MoviesContent = styled.div`
   width: 100%;
@@ -23,14 +24,6 @@ const MoviesContent = styled.div`
 `;
 
 class Movies extends Component {
-  state = {
-    currentGenre: null,
-    currentPage: 1,
-    pageSize: 4,
-    searchInput: "",
-    sortColumn: { path: "title", order: "asc" }
-  };
-
   componentDidMount() {
     this.props.loadMovies();
     this.props.loadGenres();
@@ -45,41 +38,41 @@ class Movies extends Component {
   };
 
   handleGenre = genre => {
-    this.setState({
-      currentGenre: genre,
-      currentPage: 1,
-      searchInput: ""
-    });
+    this.props.setCurrentGenre(genre);
+    this.props.setCurrentPage(1);
+    this.props.setSearchInput("");
   };
 
   handlePageChange = page => {
-    this.setState({ currentPage: page });
+    this.props.setCurrentPage(page);
   };
 
   handleSort = sortColumn => {
-    this.setState({ sortColumn: sortColumn });
+    this.props.setSortColumn(sortColumn);
   };
 
   handleSearchChange = query => {
-    this.setState({ searchInput: query, currentGenre: null, currentPage: 1 });
+    this.props.setSearchInput(query);
+    this.props.setCurrentGenre(null);
+    this.props.setCurrentPage(1);
   };
 
   render() {
+    const { user, movies, genres, filters } = this.props;
+
     const {
       currentGenre,
       currentPage,
       pageSize,
       sortColumn,
       searchInput
-    } = this.state;
-
-    const { user, movies, genres } = this.props;
+    } = filters;
 
     const showingGenres = genresWithAllGenres(genres);
 
     const { paginatedMovies, count } = getPaginatedMoviesAndCount(
       movies,
-      this.state
+      filters
     );
 
     if (count === 0)
@@ -128,19 +121,27 @@ class Movies extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    movies: state.movies,
-    genres: state.genres
-  };
-};
+const mapStateToProps = state => ({
+  movies: state.movies,
+  genres: state.genres,
+  filters: state.filters
+});
 
 const mapDispatchToProps = dispatch => ({
   loadMovies: () => dispatch(moviesAction.loadMovies()),
-  addMovie: movie => dispatch(moviesAction.addMovie(movie)),
   likeMovie: movie => dispatch(moviesAction.likeMovie(movie)),
   deleteMovie: movieId => dispatch(moviesAction.deleteMovie(movieId)),
-  loadGenres: () => dispatch(genresAction.loadGenres())
+
+  loadGenres: () => dispatch(genresAction.loadGenres()),
+
+  setCurrentGenre: currentGenre =>
+    dispatch(filtersAction.setCurrentGenre(currentGenre)),
+  setCurrentPage: currentPage =>
+    dispatch(filtersAction.setCurrentPage(currentPage)),
+  setPageSize: pageSize => dispatch(filtersAction.setPageSize(pageSize)),
+  setSearchInput: searchInput =>
+    dispatch(filtersAction.setSearchInput(searchInput)),
+  setSortColumn: sortColumn => dispatch(filtersAction.setSortColumn(sortColumn))
 });
 
 export default connect(
