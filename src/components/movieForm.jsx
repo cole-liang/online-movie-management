@@ -17,7 +17,7 @@ class MovieForm extends Form {
   };
 
   /* Data will lose after refreshing. If loadMovie is implemented in Action, it */
-  /* will be hard to redirect to not-found page. Looking for better solution.   */
+  /* will be hard to redirect to not-found page. Looking for a better solution. */
   populateMovies() {
     if (this.props.isAddMovie) return;
 
@@ -37,6 +37,7 @@ class MovieForm extends Form {
 
   componentDidMount() {
     this.populateMovies();
+    console.log("Form");
   }
 
   mapToViewModel = movie => {
@@ -71,11 +72,9 @@ class MovieForm extends Form {
   };
 
   doSubmit = () => {
-    if (this.props.isAddMovie) {
-      this.props.addMovie(this.state.data);
-    } else {
-      this.props.updateMovie(this.state.data);
-    }
+    this.props.isAddMovie
+      ? this.props.addMovie(this.state.data)
+      : this.props.updateMovie(this.state.data);
 
     this.props.history.push("/movies");
   };

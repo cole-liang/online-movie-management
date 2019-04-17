@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
 
 import "./index.css";
+import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
 

@@ -125,7 +125,8 @@ class Movies extends Component {
 const mapStateToProps = state => ({
   movies: state.movies,
   genres: state.genres,
-  filters: state.filters
+  filters: state.filters,
+  user: state.user
 });
 
 const mapDispatchToProps = dispatch => ({

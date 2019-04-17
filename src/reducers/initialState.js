@@ -12,5 +12,8 @@ export default {
     pageSize: 4,
     searchInput: "",
     sortColumn: { path: "title", order: "asc" }
-  }
+  },
+
+  // structure: { }
+  user: {}
 };

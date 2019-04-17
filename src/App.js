@@ -1,23 +1,16 @@
 import React, { Component } from "react";
-import { Route, Redirect, Switch, NavLink } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { Menu, Icon } from "antd";
-import styled from "styled-components";
-import Movies from "./components/movies";
-import NavBar from "./components/common/navBar";
-import Accounts from "./components/accounts";
-import Statistics from "./components/statistics";
-import NotFound from "./components/notFound";
-import MovieForm from "./components/movieForm";
-import LoginForm from "./components/common/loginForm";
-import RegisterForm from "./components/common/registerForm";
-import Logout from "./components/common/logout";
-import ProtectedRoute from "./components/common/protectedRoute";
-import auth from "./services/authService";
-import "react-toastify/dist/ReactToastify.css";
-import "./App.css";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import * as moviesAction from "./actions/moviesAction";
+
+import Header from "./components/common/header";
+import Footer from "./components/common/footer";
+import NavBar from "./components/common/navBar";
+import AppRouter from "./routers/appRouter";
+
+import styled from "styled-components";
+import * as userActions from "./actions/userAction";
+import "./App.css";
 
 const collapsedWidthSm = "80px";
 const collapsedWidthLg = "250px";
@@ -46,40 +39,11 @@ const Container = styled.div`
     min-height: 100vh;
   }
 
-  & .content {
-    display: flex;
-    flex: 1;
-  }
-
-  & header {
-    height: 60px;
-    background: #fff;
-    font-size: 35px;
-    font-weight: 600;
-    font-family: "Comic Sans MS", cursive, sans-serif;
-    text-align: center;
-    box-shadow: 0px 3px 5px #dcdcdc;
-  }
-
-  & header > a {
-    color: #ffa500 !important;
-    text-decoration: none;
-  }
-
-  & footer {
-    background: #fff;
-    color: #625471;
-    border-top: 1px solid #e2dee6;
-    text-align: center;
-    padding: 15px 0;
-  }
-
   & .horizontalMenu {
     display: none;
   }
 
   @media only screen and (max-width: 768px) {
-    & header,
     & .navDiv {
       display: none;
     }
@@ -94,25 +58,28 @@ const Container = styled.div`
   }
 `;
 
-const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
+const appTitle = "Colima";
+
+const footerContent = (
+  <React.Fragment>
+    <i class="fa fa-copyright" /> Copyright LWX(Cole) 2019
+  </React.Fragment>
+);
 
 class App extends Component {
   state = {};
 
   componentDidMount() {
-    const user = auth.getCurrentUser();
-    this.setState({ user, isCollapsed: false });
-    // this.props.loadMovies();
+    this.props.loadUser();
+    this.setState({ isCollapsed: false });
   }
 
   handleCollapsed = isCollapsed => {
-    console.log(isCollapsed);
     this.setState({ isCollapsed });
   };
 
   render() {
-    const { user, isCollapsed } = this.state;
+    const { isCollapsed } = this.state;
     return (
       <Container isCollapsed={isCollapsed}>
         <div className="navDiv">
@@ -123,52 +90,28 @@ class App extends Component {
             onCollapsed={this.handleCollapsed}
             collapsedWidthSm={collapsedWidthSm}
             collapsedWidthLg={collapsedWidthLg}
-            user={user}
           />
         </div>
         <div class="displayWeb">
-          <header>
-            <NavLink to="/">
-              <span>Colima</span>
-            </NavLink>
-          </header>
+          <Header title={appTitle} />
           <div class="horizontalMenu">
-            <NavBar mode="horizontal" title="Colima" user={user} />
+            <NavBar mode="horizontal" title={appTitle} />
           </div>
-          <div className="content">
-            <Switch>
-              <ProtectedRoute path="/movies/:id" component={MovieForm} />
-              <Route
-                path="/movies"
-                render={props => <Movies user={user} {...props} />}
-              />
-              <Route path="/accounts/:id" component={Accounts} />
-              <Route path="/statistics" component={Statistics} />
-              <Route path="/not-found" exact component={NotFound} />
-              <Route path="/login" exact component={LoginForm} />
-              <Route path="/logout" exact component={Logout} />
-              <Route path="/register" exact component={RegisterForm} />
-              <Redirect from="/" exact to="/movies" component={Movies} />
-              <Redirect to="/not-found" component={NotFound} />
-            </Switch>
-          </div>
-          <footer>
-            <span>
-              <i class="fa fa-copyright" /> Copyright LWX(Cole) 2019
-            </span>
-          </footer>
+          <AppRouter />
+          <Footer content={footerContent} />
         </div>
       </Container>
     );
   }
 }
 
-// const mapDispatchToProps = dispatch => ({
-//   loadMovies: () => dispatch(moviesAction.loadMovies())
-// });
+const mapDispatchToProps = dispatch => ({
+  loadUser: () => dispatch(userActions.loadUser())
+});
 
-// export default connect(
-//   null,
-//   mapDispatchToProps
-// )(App);
-export default App;
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(App)
+);
