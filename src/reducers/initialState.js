@@ -14,6 +14,6 @@ export default {
     sortColumn: { path: "title", order: "asc" }
   },
 
-  // structure: { }
-  user: {}
+  // structure: { user: {}, error: errorObj, jwt: jsonStr }
+  userInfo: {}
 };

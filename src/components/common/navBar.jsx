@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { Menu, Icon, Button } from "antd";
-import styled from "styled-components";
+import { NavLink } from "react-router-dom";
+import { Menu, Icon } from "antd";
 import { connect } from "react-redux";
+import styled from "styled-components";
 
 const Nav = styled.div`
   left: 0;
@@ -194,7 +194,7 @@ class NavBar extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.userInfo.user
 });
 
 export default connect(

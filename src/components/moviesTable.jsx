@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+
 import Like from "./common/like";
 import Table from "./common/table";
-import { Link } from "react-router-dom";
-import auth from "../services/authService";
 
 class MoviesTable extends Component {
   state = {
@@ -36,9 +37,8 @@ class MoviesTable extends Component {
     )
   };
 
-  constructor() {
-    super();
-    const user = auth.getCurrentUser();
+  componentDidMount() {
+    const user = this.props.user;
     if (user && user.isAdmin) this.state.columns.push(this.deleteColumn);
   }
 
@@ -56,4 +56,12 @@ class MoviesTable extends Component {
   }
 }
 
-export default MoviesTable;
+const mapStateToProps = state => ({
+  user: state.userInfo.user,
+  filters: state.filters
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(MoviesTable);

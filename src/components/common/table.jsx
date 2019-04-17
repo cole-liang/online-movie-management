@@ -5,7 +5,7 @@ import TableBody from "./tableBody";
 const Table = ({ data, columns, onSort, sortColumn }) => {
   return (
     <table className="table m-2">
-      <TableHeader columns={columns} onSort={onSort} sortColumn={sortColumn} />
+      <TableHeader columns={columns} onSort={onSort} />
       <TableBody data={data} columns={columns} />
     </table>
   );

@@ -1,14 +1,13 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import auth from "../../services/authService";
+import { connect } from "react-redux";
 
-const ProtectedRoute = ({ component: Component, render, ...rest }) => {
-  console.log("protected");
+const ProtectedRoute = ({ component: Component, render, user, ...rest }) => {
   return (
     <Route
       {...rest}
       render={props => {
-        if (!auth.getCurrentUser())
+        if (!user)
           return (
             <Redirect
               to={{
@@ -23,4 +22,11 @@ const ProtectedRoute = ({ component: Component, render, ...rest }) => {
   );
 };
 
-export default ProtectedRoute;
+const mapStateToProps = state => ({
+  user: state.userInfo.user
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(ProtectedRoute);

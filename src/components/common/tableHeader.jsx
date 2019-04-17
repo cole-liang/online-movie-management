@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 class TableHeader extends Component {
   raiseSort(path) {
-    let column = { ...this.props.sortColumn };
+    let column = { ...this.props.filters.sortColumn };
     if (column.path === path)
       column.order = column.order === "asc" ? "desc" : "asc";
     else {
@@ -13,7 +14,7 @@ class TableHeader extends Component {
   }
 
   renderSortIcon = column => {
-    const { sortColumn } = this.props;
+    const { sortColumn } = this.props.filters;
     if (column.path !== sortColumn.path || !column.path) return null;
     return sortColumn.order === "asc" ? (
       <i className="fa fa-sort-asc" />
@@ -42,4 +43,11 @@ class TableHeader extends Component {
   }
 }
 
-export default TableHeader;
+const mapStateToProps = state => ({
+  filters: state.filters
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(TableHeader);

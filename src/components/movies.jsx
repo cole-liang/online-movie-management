@@ -3,15 +3,18 @@ import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
 import MoviesTable from "./moviesTable";
 import SearchBox from "./common/searchBox";
-import styled from "styled-components";
+
 import { NavLink } from "react-router-dom";
 import { Spin } from "antd";
 import { connect } from "react-redux";
 import { genresWithAllGenres } from "../selectors/genresSelector";
 import { getPaginatedMoviesAndCount } from "../selectors/moviesSelector";
+
 import * as moviesAction from "../actions/moviesAction";
 import * as genresAction from "../actions/genresAction";
 import * as filtersAction from "../actions/filtersAction";
+
+import styled from "styled-components";
 
 const MoviesContent = styled.div`
   width: 100%;
@@ -24,13 +27,13 @@ const MoviesContent = styled.div`
 `;
 
 class Movies extends Component {
-  componentDidMount() {
-    this.props.loadMovies();
-    this.props.loadGenres();
+  async componentDidMount() {
+    await this.props.loadMovies();
+    await this.props.loadGenres();
   }
 
-  handleDelete = movie => {
-    this.props.deleteMovie(movie._id);
+  handleDelete = async movie => {
+    await this.props.deleteMovie(movie._id);
   };
 
   handleLike = movie => {
@@ -126,16 +129,20 @@ const mapStateToProps = state => ({
   movies: state.movies,
   genres: state.genres,
   filters: state.filters,
-  user: state.user
+  user: state.userInfo.user
 });
 
 const mapDispatchToProps = dispatch => ({
-  loadMovies: () => dispatch(moviesAction.loadMovies()),
+  // movies action
+  loadMovies: async () => await dispatch(moviesAction.loadMovies()),
   likeMovie: movie => dispatch(moviesAction.likeMovie(movie)),
-  deleteMovie: movieId => dispatch(moviesAction.deleteMovie(movieId)),
+  deleteMovie: async movieId =>
+    await dispatch(moviesAction.deleteMovie(movieId)),
 
-  loadGenres: () => dispatch(genresAction.loadGenres()),
+  // genres action
+  loadGenres: async () => await dispatch(genresAction.loadGenres()),
 
+  // filters action
   setCurrentGenre: currentGenre =>
     dispatch(filtersAction.setCurrentGenre(currentGenre)),
   setCurrentPage: currentPage =>

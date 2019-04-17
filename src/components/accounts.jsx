@@ -1,14 +1,12 @@
 import React, { Component } from "react";
-import auth from "../services/authService";
+import { connect } from "react-redux";
 
 class Accounts extends Component {
-  state = {};
-
   componentDidMount() {
     const userId = this.props.match.params.id;
-    const user = auth.getCurrentUser();
 
-    if (user._id !== userId) this.props.history.replace("/not-found");
+    if (this.props.user._id !== userId)
+      this.props.history.replace("/not-found");
   }
 
   render() {
@@ -16,4 +14,11 @@ class Accounts extends Component {
   }
 }
 
-export default Accounts;
+const mapStateToProps = state => ({
+  user: state.userInfo.user
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(Accounts);

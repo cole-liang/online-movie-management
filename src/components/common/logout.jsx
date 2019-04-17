@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import auth from "../../services/authService";
+import { connect } from "react-redux";
+import * as userAction from "../../actions/userAction";
 
 class Logout extends Component {
   componentDidMount() {
-    auth.logout();
+    this.props.logout();
     window.location = "/";
   }
 
@@ -12,4 +13,11 @@ class Logout extends Component {
   }
 }
 
-export default Logout;
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(userAction.logoutUser())
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Logout);

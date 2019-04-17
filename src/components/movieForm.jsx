@@ -37,7 +37,6 @@ class MovieForm extends Form {
 
   componentDidMount() {
     this.populateMovies();
-    console.log("Form");
   }
 
   mapToViewModel = movie => {

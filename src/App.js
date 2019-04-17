@@ -67,11 +67,12 @@ const footerContent = (
 );
 
 class App extends Component {
-  state = {};
+  state = {
+    isCollapsed: false
+  };
 
   componentDidMount() {
     this.props.loadUser();
-    this.setState({ isCollapsed: false });
   }
 
   handleCollapsed = isCollapsed => {

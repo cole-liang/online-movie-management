@@ -1,9 +1,12 @@
 import React from "react";
 import Joi from "joi-browser";
 import Form from "./form";
-import auth from "../../services/authService";
 import styled from "styled-components";
+
 import { Redirect, NavLink } from "react-router-dom";
+import { connect } from "react-redux";
+
+import * as userAction from "../../actions/userAction";
 
 const FormDiv = styled.div`
   background: #f5f6f7;
@@ -42,22 +45,23 @@ class LoginForm extends Form {
   };
 
   doSubmit = async () => {
-    try {
-      await auth.login(this.state.data);
+    await this.props.login(this.state.data);
 
+    const error = this.props.error;
+
+    if (!error) {
       const { state } = this.props.location;
       window.location = state ? state.from.pathname : "/";
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        const errors = { ...this.state.errors };
-        errors.username = error.response.data;
-        this.setState({ errors });
-      }
+    } else if (error.response && error.response.status === 400) {
+      const errors = { ...this.state.errors };
+      errors.username = error.response.data;
+      this.setState({ errors });
+      this.props.resetUserError();
     }
   };
 
   render() {
-    if (auth.getCurrentUser()) return <Redirect to="/" />;
+    if (this.props.user) return <Redirect to="/" />;
     return (
       <FormDiv>
         <div className="form">
@@ -87,4 +91,17 @@ class LoginForm extends Form {
   }
 }
 
-export default LoginForm;
+const mapStateToProps = state => ({
+  user: state.userInfo.user,
+  error: state.userInfo.error
+});
+
+const mapDispatchToProps = dispatch => ({
+  login: async user => await dispatch(userAction.loginUser(user)),
+  resetUserError: () => dispatch(userAction.resetUserError())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LoginForm);

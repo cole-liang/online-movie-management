@@ -1,10 +1,12 @@
 import React from "react";
 import Form from "./form";
 import Joi from "joi-browser";
-import auth from "../../services/authService";
 import styled from "styled-components";
+
 import { Steps, Alert } from "antd";
-import { register } from "../../services/userService";
+import { connect } from "react-redux";
+
+import * as userAction from "../../actions/userAction";
 
 const FormDiv = styled.div`
   margin: 50px auto;
@@ -51,9 +53,8 @@ class RegisterForm extends Form {
       name: ""
     },
     errors: {},
-    current: 0,
-    seconds: 3,
-    response: null
+    currentStep: 0,
+    seconds: 3
   };
 
   schema = {
@@ -71,16 +72,18 @@ class RegisterForm extends Form {
   };
 
   doSubmit = async () => {
-    try {
-      const response = await register(this.state.data);
-      this.setState({ response, current: 1 });
+    await this.props.registerUser(this.state.data);
+
+    const error = this.props.error;
+
+    if (!error) {
+      this.setState({ currentStep: 1 });
       this.countDown();
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        const errors = { ...this.state.errors };
-        errors.username = error.response.data;
-        this.setState({ errors });
-      }
+    } else if (error.response && error.response.status === 400) {
+      const errors = { ...this.state.errors };
+      errors.username = error.response.data;
+      this.setState({ errors });
+      this.props.resetUserError();
     }
   };
 
@@ -100,21 +103,20 @@ class RegisterForm extends Form {
   };
 
   pageRedirect = () => {
-    const { response } = this.state;
-    auth.loginWithJwt(response.headers["x-auth-token"]);
+    this.props.loginWithJwt(this.props.userJwt);
     window.location = "/";
   };
 
   render() {
-    const { current, seconds } = this.state;
+    const { currentStep, seconds } = this.state;
     if (seconds === 0) this.pageRedirect();
     return (
       <FormDiv>
-        <Steps className="steps" current={current}>
+        <Steps className="steps" current={currentStep}>
           <Step key="register" title="Register" />
           <Step key="finished" title="Finished" />
         </Steps>
-        {current === 0 && (
+        {currentStep === 0 && (
           <form onSubmit={this.handleSubmit}>
             {this.renderInput("username", "Username")}
             {this.renderInput("password", "Password", "password")}
@@ -122,7 +124,7 @@ class RegisterForm extends Form {
             {this.renderButton("Register")}
           </form>
         )}
-        {current === 1 && (
+        {currentStep === 1 && (
           <div className="successDiv">
             <Alert
               className="successMsg"
@@ -138,4 +140,18 @@ class RegisterForm extends Form {
   }
 }
 
-export default RegisterForm;
+const mapStateToProps = state => ({
+  error: state.userInfo.error,
+  userJwt: state.userInfo.jwt
+});
+
+const mapDispatchToProps = dispatch => ({
+  registerUser: async user => await dispatch(userAction.registerUser(user)),
+  loginWithJwt: jwt => dispatch(userAction.loginUserWithJwt(jwt)),
+  resetUserError: () => dispatch(userAction.resetUserError())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RegisterForm);
